@@ -50,7 +50,6 @@ func main() {
 			http_ok = true
 		}
 		if http_ok {
-			time.Sleep(time.Second * 60)
 			print_limit()
 		} else {
 			print_dead()
@@ -58,7 +57,6 @@ func main() {
 	} else {
 		print_ping(ping_rtt)
 		// all fine, sleep for a bit
-		time.Sleep(time.Second * 8)
 	}
 	os.Exit(0)
 }
@@ -67,7 +65,7 @@ func print_ping(ping time.Duration) {
 	fmt.Printf("RTT: %v\n", ping)
 	fmt.Printf("RTT: %v\n", ping)
 	if ping > bad_ping {
-		fmt.Println("#FFFF00")
+		fmt.Println("#FF9900")
 	} else {
 		fmt.Println("#00FF00")
 	}
@@ -76,7 +74,7 @@ func print_ping(ping time.Duration) {
 func print_limit() {
 	fmt.Printf("HTTP!\n")
 	fmt.Printf("HTTP!\n")
-	fmt.Println("#FFAA00")
+	fmt.Println("#FFCC00")
 }
 
 func print_dead() {
