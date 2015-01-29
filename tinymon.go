@@ -6,11 +6,12 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 )
 
 var ping_ip = "8.8.8.8"
-var http_url = "http://www.google.com"
+var http_url = "http://www.google.com/"
 
 var bad_ping = 300 * time.Millisecond
 
@@ -45,12 +46,16 @@ func main() {
 	time.Sleep(time.Second * 2)
 	p.Done()
 	if ping_rtt == 0 {
+		time_start := time.Now()
 		_, err = client.Head(http_url)
+		time.Sleep(time.Second * 2)
+
+		http_rtt := time.Since(time_start)
 		if err == nil {
 			http_ok = true
 		}
 		if http_ok {
-			print_limit()
+			print_http(http_rtt)
 			// dont bother that url too much, if ping doesnt work but http doee
 			// it usually means firewall eats it
 			time.Sleep(time.Second * 120)
@@ -64,30 +69,47 @@ func main() {
 	os.Exit(0)
 }
 
-func print_ping(ping time.Duration) {
-	fmt.Printf("RTT: %v\n", ping)
-	fmt.Printf("RTT: %v\n", ping)
-	if ping > (bad_ping * 2) {
+func print_ping(rtt time.Duration) {
+	fmt.Printf("RTT: %s\n", format_rtt(rtt))
+	fmt.Printf("RTT: %s\n", format_rtt(rtt))
+	if rtt > (bad_ping * 2) {
 		fmt.Println("#FFCC00")
-	} else if ping > (bad_ping) {
+	} else if rtt > (bad_ping) {
 		fmt.Println("#FFFF00")
-	} else if ping > (bad_ping / 2) {
+	} else if rtt > (bad_ping / 2) {
 		fmt.Println("#66FF00")
-	} else if ping > (bad_ping / 2) {
+	} else if rtt > (bad_ping / 2) {
 		fmt.Println("#33FF00")
 	} else {
 		fmt.Println("#00FF00")
 	}
 }
 
-func print_limit() {
-	fmt.Printf("HTTP!\n")
-	fmt.Printf("HTTP!\n")
-	fmt.Println("#FFCC00")
+func print_http(rtt time.Duration) {
+	fmt.Printf("HTTP: %s\n", format_rtt(rtt))
+	fmt.Printf("HTTP: %s\n", format_rtt(rtt))
+	bad_ping := bad_ping * 5 // more rtts to do http ping, especially if proxy is involved
+	if rtt > (bad_ping * 2) {
+		fmt.Println("#FF2200")
+	} else if rtt > (bad_ping) {
+		fmt.Println("#FFFF00")
+	} else if rtt > (bad_ping / 2) {
+		fmt.Println("#FFAAAA")
+	} else if rtt > (bad_ping / 2) {
+		fmt.Println("#FFAAFF")
+	} else {
+		fmt.Println("#AAAAFF")
+	}
 }
 
 func print_dead() {
-	fmt.Printf("HTTP!\n")
-	fmt.Printf("HTTP!\n")
+	fmt.Printf("DEAD!\n")
+	fmt.Printf("DEAD!\n")
 	fmt.Println("#FF0000")
+}
+
+func format_rtt(rtt time.Duration) string {
+	str := fmt.Sprintf("%v", rtt)
+	re := regexp.MustCompile(`\.(\d{3})\d*`)
+	return re.ReplaceAllString(str, ".$1")
 }
