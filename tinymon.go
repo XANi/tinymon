@@ -51,6 +51,9 @@ func main() {
 		}
 		if http_ok {
 			print_limit()
+			// dont bother that url too much, if ping doesnt work but http doee
+			// it usually means firewall eats it
+			time.Sleep(time.Second * 120)
 		} else {
 			print_dead()
 		}
