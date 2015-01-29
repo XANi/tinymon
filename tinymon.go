@@ -64,8 +64,14 @@ func main() {
 func print_ping(ping time.Duration) {
 	fmt.Printf("RTT: %v\n", ping)
 	fmt.Printf("RTT: %v\n", ping)
-	if ping > bad_ping {
-		fmt.Println("#FF9900")
+	if ping > (bad_ping * 2) {
+		fmt.Println("#FFCC00")
+	} else if ping > (bad_ping) {
+		fmt.Println("#FFFF00")
+	} else if ping > (bad_ping / 2) {
+		fmt.Println("#66FF00")
+	} else if ping > (bad_ping / 2) {
+		fmt.Println("#33FF00")
 	} else {
 		fmt.Println("#00FF00")
 	}
