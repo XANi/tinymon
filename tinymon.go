@@ -42,8 +42,6 @@ func main() {
 	if ping_rtt == 0 {
 		time_start := time.Now()
 		_, err = client.Head(http_url)
-		time.Sleep(time.Second * 2)
-
 		http_rtt := time.Since(time_start)
 		if err == nil {
 			http_ok = true
