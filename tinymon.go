@@ -19,14 +19,8 @@ func main() {
 	ping_rtt := time.Duration(0)
 	http_ok := false
 
-	http_transport := http.Transport{
-		Dial: (&net.Dialer{
-			Timeout: 5 * time.Second,
-		}).Dial,
-	}
-
 	client := http.Client{
-		Transport: &http_transport,
+		Timeout: 7 * time.Second,
 	}
 
 	p := fastping.NewPinger()
